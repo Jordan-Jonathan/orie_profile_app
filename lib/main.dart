@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const ProfileApp());
@@ -36,7 +37,7 @@ class ProfileScreen extends StatelessWidget {
           _buildBackgroundImage(),
 
           // Layer 2: The scrollable content
-          _buildScrollableContent(),
+          _buildScrollableContent(context),
         ],
       ),
     );
@@ -53,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
           fit: BoxFit.cover,
           // Add a slight dark overlay to make text more readable
           colorFilter: ColorFilter.mode(
-            Colors.black26,
+            Color.fromARGB(41, 0, 0, 0),
             BlendMode.darken,
           ),
         ),
@@ -61,7 +62,7 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildScrollableContent() {
+  Widget _buildScrollableContent(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
           _buildOutlinedHeaderText(),
 
           // This is the main blurred content card
-          _buildProfileCard(),
+          _buildProfileCard(context),
 
           // Add some padding at the bottom
           const SizedBox(height: 60),
@@ -86,16 +87,16 @@ class ProfileScreen extends StatelessWidget {
     // with the blurred card, as requested.
     return SizedBox(
       // --- FIX 1: Increased height so 'A' is not hidden by the card ---
-      height: 550, // Was 350
+      height: 570, // Was 350
       child: Stack(
         clipBehavior: Clip.none, // Allow letters to go outside the box slightly
         children: [
           // --- FIX 2: Re-positioned all letters to be spaced out ---
-          _buildOutlinedLetter('O', 0, 20),
-          _buildOutlinedLetter('Z', 0, 240),  // Was (20, 190)
-          _buildOutlinedLetter('R', 165, 25), // Was (160, -10)
-          _buildOutlinedLetter('A', 165, 240), // Was (160, 160)
-          _buildOutlinedLetter('Y', 330, 27), // Was (280, 100)
+          _buildOutlinedLetter('O', 0, 15),
+          _buildOutlinedLetter('Z', 83, 275),  // Was (20, 190)
+          _buildOutlinedLetter('R', 165, 20), // Was (160, -10)
+          _buildOutlinedLetter('A', 245, 273), // Was (160, 160)
+          _buildOutlinedLetter('Y', 330, 22), // Was (280, 100)
         ],
       ),
     );
@@ -111,19 +112,19 @@ class ProfileScreen extends StatelessWidget {
           letter,
           style: TextStyle(
             fontSize: 200,
-            fontWeight: FontWeight.w700,
+            fontWeight: FontWeight.w600,
             // This is the trick to get outlined text
             foreground: Paint()
               ..style = PaintingStyle.stroke
-              ..strokeWidth = 3
-              ..color = Colors.white,
+              ..strokeWidth = 1
+              ..color = const Color.fromARGB(255, 255, 255, 255),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildProfileCard() {
+  Widget _buildProfileCard(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ClipRRect(
@@ -144,13 +145,13 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 _buildProfileHeader(),
                 const SizedBox(height: 24),
-                _buildConnectButton(),
+                _buildConnectButton(context),
                 const SizedBox(height: 32),
                 _buildPortfolioSection(),
                 const SizedBox(height: 32),
                 _buildInterestsSection(),
                 const SizedBox(height: 32),
-                _buildExperienceSection(),
+                _buildExperienceSection(context),
               ],
             ),
           ),
@@ -167,35 +168,65 @@ class ProfileScreen extends StatelessWidget {
         const Text(
           "Oryza",
           style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.w900, // Bolder
+            fontSize: 36,
+            fontWeight: FontWeight.bold, // Bolder
             color: Colors.white,
           ),
         ),
         const Text(
           "Reynaleta Wibowo",
           style: TextStyle(
-            fontSize: 24, // Slightly smaller
-            fontWeight: FontWeight.bold,
+            fontSize: 26, // Slightly smaller
+            fontWeight: FontWeight.w600,
             color: Colors.white,
           ),
         ),
-        const SizedBox(height: 12), // Added a bit more space
-        Text(
-          "5026231081 — @oryzarey",
+        
+        // phone and handle row
+                          // Row(
+                          //   children: [const SizedBox(height: 100) ,
+                          //     Text('5026231081', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
+                          //     Text('—', style: TextStyle(color: Colors.white54, fontSize: 16)),
+                          //     Text('@oryzarey', style: TextStyle(color: Color.fromARGB(225, 186, 174, 174), fontSize: 16)),
+                          //   ],
+                          // ),
+
+        const SizedBox(height: 12),
+        Row(
+          children: const [
+            Text(
+              '5026231081',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+            SizedBox(width: 8),
+            Text(
+              '—',
+              style: TextStyle(color: Colors.white54, fontSize: 16),
+            ),
+            SizedBox(width: 8),
+            Text(
+              '@oryzarey',
+              style: TextStyle(color: Colors.white54, fontSize: 16),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        const Divider(color: Colors.white24),
+        const SizedBox(height: 12),
+
+        const Text(
+          "Hi! My name is Oryza, and I’m currently a third-year Information Systems student. I’m passionate about solving problems, working collaboratively, and finding ways to make processes more efficient through technology.",
           style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[300],
+            fontSize: 12,
+            color: Colors.white,
+            height: 1.4,
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 10),
         const Text(
-          "Information Systems Undergrad, super pretty super stylish "
-          "and ready to take on the world, n the best gf ever. "
-          "Information Systems Undergrad, super pretty super stylish "
-          "and ready to take on the world, n the best gf ever.",
+          "I’m always open to connecting with professionals, mentors, and all fellas who share similar interests. If you’d like to exchange ideas, collaborate, or just connect, feel free to reach out, I’d love to chat and learn from you!",
           style: TextStyle(
-            fontSize: 15,
+            fontSize: 12,
             color: Colors.white,
             height: 1.4,
           ),
@@ -204,13 +235,28 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildConnectButton() {
+  Widget _buildConnectButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {},
+      height: 52,
+        child: ElevatedButton(
+        onPressed: () async {
+          final Uri url = Uri.parse('https://www.linkedin.com/in/oryzarey/');
+          // Prefer launchUrl with an explicit mode. Returns true on success.
+          final bool launched = await launchUrl(
+            url,
+            mode: LaunchMode.externalApplication,
+          );
+
+          if (!launched) {
+            // Show a user-friendly message instead of throwing an exception.
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Could not open link: $url')),
+            );
+          }
+        },
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: EdgeInsets.zero,
           backgroundColor: Colors.black.withOpacity(0.7),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
@@ -233,11 +279,11 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildPortfolioSection() {
     // Define a list of portfolio images for the carousel
     final portfolioImages = [
-      'assets/images/porto1.JPG',
-      'assets/images/porto2.jpg',
-      'assets/images/porto3.JPG',
-      'assets/images/porto4.jpg', // Added more items
-      'assets/images/porto5.jpg',
+      'assets/images/picture1.jpg',
+      'assets/images/picture2.jpg',
+      'assets/images/picture3.jpg',
+      'assets/images/picture4.jpg', // Added more items
+      'assets/images/picture5.jpg',
     ];
 
     // Create a PageController to configure the PageView
@@ -262,12 +308,12 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: 100, // Kept the height from the original design
+          height: 110, // Kept the height from the original design
           child: PageView.builder(
             controller: pageController, // Use the page controller
             itemCount: portfolioImages.length,
             itemBuilder: (context, index) {
-              // We add padding here to create the space *between* items
+              // We add padding here to create the space between items
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 6.0), // 6px on each side = 12px gap
                 child: ClipRRect(
@@ -282,7 +328,7 @@ class ProfileScreen extends StatelessWidget {
                     // 3. Change 'Image.network' to 'Image.asset'
                     //    (e.g., Image.asset('assets/images/portfolio1.jpg', ...))
                     portfolioImages[index],
-                    height: 100,
+                    height: 110,
                     fit: BoxFit.cover,
                     // Width is now controlled by the PageView's viewportFraction
                   ),
@@ -297,12 +343,10 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildInterestsSection() {
     final interests = [
-      "Data Analyzing",
-      "Data Analyzing",
-      "Data Analyzing",
-      "Data Analyzing",
-      "Data Analyzing",
-      "Data Analyzing",
+      "Data Analytics",
+      "Business Processing",
+      "Consulting",
+      "UI/UX Design",
     ];
 
     return Column(
@@ -318,8 +362,8 @@ class ProfileScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
+          spacing: 10.0,
+          runSpacing: 10.0,
           children: interests.map((interest) => _buildInterestChip(interest)).toList(),
         ),
       ],
@@ -331,12 +375,27 @@ class ProfileScreen extends StatelessWidget {
       label: Text(label),
       backgroundColor: Colors.white.withOpacity(0.1),
       labelStyle: const TextStyle(color: Colors.white),
-      side: BorderSide(color: Colors.white.withOpacity(0.3)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide(color: Colors.white24)),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     );
   }
 
-  Widget _buildExperienceSection() {
+  Widget _buildExperienceSection(BuildContext context) {
+    final experiences = [
+      {
+        'title': 'Project Analyst — 180 Degrees Consulting ITS',
+        'body': 'Conducting research and analysis to solve client problems in business and IT. Collaborating in a team to deliver data-driven insights and strategic recommendations.'
+      },
+      {
+        'title': 'Teaching Assistant — Database Administration',
+        'body': 'Supporting weekly classes for 45 students by teaching and assessing practical PostgreSQL exercises using DBeaver. Assisting in developing effective learning methods with fellow TAs.'
+      },
+      {
+        'title': 'Event Staff — 8th ISICO 2025',
+        'body': 'Directed and coordinated mainstage programs as Program and Floor Director. Moderated sessions and contributed to producing the official event program book.'
+      },
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -349,35 +408,46 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        _buildExperienceItem(
-            "Information Systems Undergrad, super pretty super sty"),
-        const SizedBox(height: 12),
-        _buildExperienceItem(
-            "Information Systems Undergrad, super pretty super sty"),
+
+        // Build a list of ExpansionTiles to mimic the FAQ-style accordion
+        ...experiences.map((exp) {
+          return Column(
+            children: [
+              ExpansionTile(
+                tilePadding: const EdgeInsets.symmetric(horizontal: 0),
+                childrenPadding: const EdgeInsets.only(left: 24, right: 0, bottom: 12),
+                collapsedIconColor: Colors.white70,
+                iconColor: Colors.white,
+                backgroundColor: Colors.transparent,
+                title: Text(
+                  exp['title']!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      exp['body']!,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(color: Colors.white24, height: 1, thickness: 1),
+            ],
+          );
+        }),
       ],
     );
   }
 
-  Widget _buildExperienceItem(String text) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 7.0),
-          child: Icon(Icons.circle, size: 6, color: Colors.white),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 15,
-              color: Colors.white,
-              height: 1.4,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  // Experience tiles are rendered inline as ExpansionTiles above.
 }

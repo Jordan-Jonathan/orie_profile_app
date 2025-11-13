@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   google_fonts: ^6.3.2
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   flutter_test:
@@ -27,3 +28,8 @@ flutter:
     - assets/images/porto3.JPG
     - assets/images/porto4.jpg
     - assets/images/porto5.jpg
+    - assets/images/picture1.jpg
+    - assets/images/picture2.jpg
+    - assets/images/picture3.jpg 
+    - assets/images/picture4.jpg
+    - assets/images/picture5.jpg
